@@ -42,33 +42,38 @@
 git clone https://github.com/tu_usuario/solicitud_service.git
 cd solicitud_service
 python -m venv venv
-.\venv\Scripts\activate  # En Windows
+.
+env\Scripts ctivate  # En Windows
 # source venv/bin/activate  # En Linux o Mac
 pip install -r requirements.txt
 uvicorn main:app --reload
-🔐 Seguridad
-Este microservicio utiliza autenticación JWT para proteger los endpoints. Para acceder a ellos:
+```
 
-Solicita un token JWT desde un sistema de autenticación (simulado o real).
+---
 
-Incluye el token en el encabezado Authorization con el formato:
+## 🔐 Seguridad
 
-makefile
-Copiar
-Editar
+Este microservicio utiliza **autenticación JWT** para proteger los endpoints. Para acceder a ellos:
+
+1. Solicita un token JWT desde un sistema de autenticación (simulado o real).
+2. Incluye el token en el encabezado `Authorization` con el formato:
+
+```
 Authorization: Bearer <tu_token_aquí>
-🔄 Resiliencia y Gestión de Errores
-Se ha incorporado la librería tenacity para aplicar:
+```
 
-Reintentos automáticos (retry) al servicio SOAP con un máximo de 2 intentos.
+---
 
-Circuit Breaker simulado, integrado en YAML (Istio style), que bloquea llamadas tras 3 fallos en 60 segundos.
+## 🔄 Resiliencia y Gestión de Errores
 
-Ejemplo conceptual (pseudocódigo YAML):
+Se ha incorporado la librería `tenacity` para aplicar:
 
-yaml
-Copiar
-Editar
+- **Reintentos automáticos (retry)** al servicio SOAP con un máximo de **2 intentos**.
+- **Circuit Breaker simulado**, integrado en YAML (estilo Istio), que bloquea llamadas tras **3 fallos en 60 segundos**.
+
+Ejemplo conceptual en YAML:
+
+```yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -87,43 +92,53 @@ spec:
           httpStatus: 500
           percentage:
             value: 25.0
-🧪 Pruebas con Postman
+```
+
+---
+
+## 🧪 Pruebas con Postman
+
 Se incluye una colección de Postman para facilitar las pruebas:
 
-Verifica los headers con JWT
+- Verifica los headers con JWT.
+- Simula solicitudes válidas y con error.
+- Muestra respuestas esperadas del sistema.
 
-Simula solicitudes válidas y con error
+---
 
-Muestra respuestas esperadas del sistema
+## 🔄 Integración con Servicios SOAP (Simulado)
 
-🔄 Integración con Servicios SOAP (Simulado)
-Este microservicio se comunica con un sistema externo SOAP que fue simulado para pruebas de resiliencia y compatibilidad con sistemas legacy.
+Este microservicio se comunica con un sistema externo **SOAP** que fue **simulado** para pruebas de resiliencia y compatibilidad con sistemas legacy.
 
-La integración se realiza a través de funciones que emulan respuestas SOAP.
+- La integración se realiza a través de funciones que emulan respuestas SOAP.
+- Se valida la interoperabilidad con servicios no RESTful.
 
-Se valida la interoperabilidad con servicios no RESTful.
+---
 
-🛡️ Gateway y Políticas de Seguridad
-A través del API Gateway Ocelot, se aplican las siguientes políticas:
+## 🛡️ Gateway y Políticas de Seguridad
 
-🔑 Autenticación por JWT en /solicitudes
+A través del **API Gateway Ocelot**, se aplican las siguientes políticas:
 
-⏳ Rate limiting para evitar abusos
+- 🔑 **Autenticación por JWT** en `/solicitudes`
+- ⏳ **Rate limiting** para evitar abusos
+- 🧱 **Reintentos y fallbacks** desde el gateway
 
-🧱 Reintentos y fallbacks desde el gateway
+---
 
-📦 Docker (opcional)
+## 📦 Docker (opcional)
+
 Para ejecutar el servicio usando Docker:
 
-bash
-Copiar
-Editar
+```bash
 docker build -t solicitudservice .
 docker run -d -p 8000:8000 solicitudservice
-🗃️ Estructura del Proyecto
-bash
-Copiar
-Editar
+```
+
+---
+
+## 🗃️ Estructura del Proyecto
+
+```
 solicitud_service/
 │
 ├── main.py                   # Entrada principal del microservicio
@@ -139,3 +154,24 @@ solicitud_service/
 │   └── test_solicitudes.py   # Pruebas unitarias (opcional)
 ├── requirements.txt
 └── README.md
+```
+
+---
+
+## 📈 Futuras Mejoras
+
+- Conexión real a un backend SOAP empresarial
+- Persistencia en base de datos SQL (PostgreSQL, SQL Server)
+- Métricas Prometheus + Dashboard Grafana
+- CI/CD con Jenkins o GitHub Actions
+- Pruebas automatizadas con `pytest`
+
+---
+
+## 👨‍💻 Autor
+
+**Guillermo Álvarez**  
+Estudiante de Ingeniería de Software  
+Ecuador 🇪🇨 | GitHub: [@Guiller438](https://github.com/Guiller438)
+
+---
