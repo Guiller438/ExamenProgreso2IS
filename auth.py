@@ -1,13 +1,27 @@
-from fastapi import HTTPException, Header
+from fastapi import HTTPException
+from fastapi.security import HTTPAuthorizationCredentials
+import jwt
 
-def validar_token(authorization: str = Header(...)):
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Token inválido")
-    
-    token = authorization.split(" ")[1]
-    
-    # Aquí deberías validar el token con el servicio de seguridad
-    if token != "tokenvalido123":  # Simulación de validación
-        raise HTTPException(status_code=403, detail="Token no autorizado")
-        
-    return token
+CLAVE_SECRETA = "GuillermoAlvarezIS"
+
+
+payload = {
+    "usuario": "GuillermoAlvarez",
+    "rol": "usuario"
+}
+
+clave = "GuillermoAlvarezIS"
+
+token = jwt.encode(payload, clave, algorithm="HS256")
+print(token)
+
+def validar_token(credentials: HTTPAuthorizationCredentials):
+    token = credentials.credentials  # Extrae el token desde el esquema Bearer
+
+    try:
+        payload = jwt.decode(token, CLAVE_SECRETA, algorithms=["HS256"])
+        return payload  # Puedes retornar información útil como usuario/rol
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=403, detail="Token inválido")
